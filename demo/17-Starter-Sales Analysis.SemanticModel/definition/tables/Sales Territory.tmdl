@@ -1,0 +1,55 @@
+table 'Sales Territory'
+	excludeFromModelRefresh
+	lineageTag: 4a29e29c-695e-40f9-b03f-7ff42451909d
+
+	column SalesTerritoryKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 18273210-10b1-4883-a45d-5cdf8bd04b92
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 8ae282e2-5945-434c-8ce7-7a5d2b0f05dc
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 1e49ff36-c08e-4cc4-8cec-444bbbef84e5
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column Group
+		dataType: string
+		lineageTag: fce379b9-099d-4140-bd21-bf830f75607f
+		summarizeBy: none
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Sales Territory-86e24776-e692-45a5-9e92-91af2c36c1a6' = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\temp\17-Table Data.xlsx"), null, true),
+				    #"Sales Territory_Sheet" = Source{[Item="Sales Territory",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Sales Territory_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SalesTerritoryKey", Int64.Type}, {"Region", type text}, {"Country", type text}, {"Group", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

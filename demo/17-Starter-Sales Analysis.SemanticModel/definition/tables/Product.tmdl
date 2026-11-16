@@ -1,0 +1,99 @@
+table Product
+	excludeFromModelRefresh
+	lineageTag: 2ed1e574-1546-4ec4-ac93-eca5a9501639
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c1acd0eb-efcd-4b82-9d6d-504143ae5b23
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		dataType: string
+		lineageTag: 978c7228-59ee-4297-a866-01671e217ffc
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product
+		dataType: string
+		lineageTag: 9e971bb5-6045-44fd-a79d-9f93e1d29240
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Standard Cost'
+		dataType: double
+		lineageTag: 9ea2a0d5-1f21-403e-8dbc-cf797e421839
+		summarizeBy: none
+		sourceColumn: Standard Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'List Price'
+		dataType: double
+		lineageTag: cf00284d-24e1-4b7a-855c-06faf3d945a2
+		summarizeBy: none
+		sourceColumn: List Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Model
+		dataType: string
+		lineageTag: 4e2e9a60-eaf3-4ecc-907e-9f4eeb60a241
+		summarizeBy: none
+		sourceColumn: Model
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subcategory
+		dataType: string
+		lineageTag: 282391f6-d36d-4c01-a71e-707ffb10f732
+		summarizeBy: none
+		sourceColumn: Subcategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 570fe0ea-dfea-4ebc-b916-335e3cfd00b5
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column SKU
+		dataType: string
+		lineageTag: 826a5652-fe2a-499a-9108-a1fbbada2ee9
+		summarizeBy: none
+		sourceColumn: SKU
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product-3d5e98b2-a997-4444-96bb-fe1718e2f2b8 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\temp\17-Table Data.xlsx"), null, true),
+				    Product_Sheet = Source{[Item="Product",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Product_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ProductKey", Int64.Type}, {"Product", type text}, {"Standard Cost", type number}, {"Color", type text}, {"List Price", type number}, {"Model", type text}, {"Subcategory", type text}, {"Category", type text}, {"SKU", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,6 @@
+relationship AutoDetected_1ef4c2c1-88d8-4115-83f8-55cea0816de4
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Users.UserEmail
+	toColumn: Sales.UserEmail
+

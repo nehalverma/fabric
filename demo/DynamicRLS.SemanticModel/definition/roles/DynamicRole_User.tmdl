@@ -1,0 +1,7 @@
+role DynamicRole_User
+	modelPermission: read
+
+	tablePermission Users = Users[UserEmail]=USERPRINCIPALNAME()
+
+	annotation PBI_Id = fad69cf0f48e46be9f8a322cac54fd33
+

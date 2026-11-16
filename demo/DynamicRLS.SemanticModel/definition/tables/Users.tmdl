@@ -1,0 +1,34 @@
+table Users
+	lineageTag: 9a925821-cfc2-4f2a-98b0-6d264326b5da
+
+	column UserEmail
+		dataType: string
+		lineageTag: 6626b1b4-6f04-4e4a-9a58-13c335ddae99
+		summarizeBy: none
+		sourceColumn: UserEmail
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 67cb4ac8-1169-48f4-a5dd-e63aedf0b43d
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Users = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Nehal Verma\OneDrive - Koenig Solutions Ltd\New Volume D\Azure\DP-600\modules\Mod 3\Dynamic RLS\Users.csv"),[Delimiter=",", Columns=2, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"UserEmail", type text}, {"Region", type text}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,64 @@
+table 'Sales Order'
+	excludeFromModelRefresh
+	lineageTag: a6257d88-80b5-45d4-aadb-bda4765a5fc1
+
+	column SalesOrderLineKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 42da1c2c-8c9b-413a-9a6e-8a2aff4db2ae
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Order Line'
+		dataType: string
+		lineageTag: 0eb69089-d438-40b8-9965-036d9203ebd5
+		isDefaultLabel
+		summarizeBy: none
+		sourceColumn: Sales Order Line
+		sortByColumn: SalesOrderLineKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Channel
+		dataType: string
+		lineageTag: 63e1261b-c4c4-4778-a051-ae1c26c6d6de
+		summarizeBy: none
+		sourceColumn: Channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Order'
+		dataType: string
+		lineageTag: b629af94-9266-408a-9c3b-7c8d042d749b
+		summarizeBy: none
+		sourceColumn: Sales Order
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Sales Orders'
+		lineageTag: 3d4600ee-8c31-4976-b423-063a4b061151
+
+		level 'Sales Order Line'
+			lineageTag: c0d53e98-d236-40ee-a163-071912152d6c
+			column: 'Sales Order Line'
+
+	partition 'Sales Order-3ce1b467-3e1b-4732-b605-3e94fee75991' = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\temp\17-Table Data.xlsx"), null, true),
+				    #"Sales Order_Sheet" = Source{[Item="Sales Order",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Sales Order_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SalesOrderLineKey", Int64.Type}, {"Sales Order", type text}, {"Sales Order Line", type text}, {"Channel", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,92 @@
+table Customer
+	excludeFromModelRefresh
+	lineageTag: 9dd3d51a-da77-46d7-bd94-381f13d4e6f4
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4223ad26-7de8-48c2-b76d-594afed483b2
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer
+		dataType: string
+		lineageTag: d5918ca2-dcab-4bc5-87fa-88c7ba91044b
+		isDefaultLabel
+		summarizeBy: none
+		sourceColumn: Customer
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 261583ec-cab5-44ae-8c69-babd63485041
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Customer ID'
+		dataType: string
+		lineageTag: 36d1a477-7699-478b-93bf-e94d95c72fd6
+		summarizeBy: none
+		sourceColumn: Customer ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column State-Province
+		dataType: string
+		lineageTag: 6cd9134a-576e-4000-bdcc-9205b404ba9a
+		summarizeBy: none
+		sourceColumn: State-Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country-Region
+		dataType: string
+		lineageTag: 79c27f76-f1c2-4bd2-bf88-a319e5fc19b2
+		summarizeBy: none
+		sourceColumn: Country-Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Postal Code'
+		dataType: string
+		lineageTag: 2c019223-f878-443e-b60e-fd17f7e626c6
+		summarizeBy: none
+		sourceColumn: Postal Code
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy Geography
+		lineageTag: c32a6dd4-68ed-4f2b-9d0a-872ba59ba2ba
+
+		level City
+			lineageTag: df5cc056-ca6a-4024-bd9b-c7021678e842
+			column: City
+
+		level Customer
+			lineageTag: e590a8be-c865-4629-aa59-34e3c32ae8a3
+			column: Customer
+
+	partition Customer-01f41322-c19c-4b65-a4cb-85a8045da233 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\temp\17-Table Data.xlsx"), null, true),
+				    Customer_Sheet = Source{[Item="Customer",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Customer_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CustomerKey", Int64.Type}, {"Customer ID", type text}, {"Customer", type text}, {"City", type text}, {"State-Province", type text}, {"Country-Region", type text}, {"Postal Code", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
